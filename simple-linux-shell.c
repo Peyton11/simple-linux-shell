@@ -68,14 +68,18 @@
     while (1) {
 
         printPrompt();
+
+        // Read the command line and parse it
         readCommand(cmdLine);
         parseCommand(cmdLine, &command);
         command.argv[command.argc] = NULL;
 
-        // These shell commands don't require execvp(). Do not need to fork a child process
+        // Quit the shell
         if (strcmp(command.name, "Q") == 0) {
             break;
         }
+
+        // Empty command. Display another prompt
         else if (strcmp(command.name, "") == 0) {
             continue;
         }
@@ -83,31 +87,46 @@
         // Create a child process to execute the command
         if ((pid = fork()) == 0) {
 
+            // Wipe the screen
             if (strcmp(command.name, "W") == 0) {
 				execvp("clear", command.argv);
 			}
+
+            // Copy file1 to file2
 			else if (strcmp(command.name, "C") == 0) {
 				execvp("cp", command.argv);
             }
+
+            // Delete file
 			else if (strcmp(command.name, "D") == 0) {
 				execvp("rm", command.argv);
             }
+
+            // Launch text editor
 			else if (strcmp(command.name, "M") == 0) {
 				execvp("nano", command.argv);
             }
+
+            // Execute command
 			else if (strcmp(command.name, "X") == 0) {
                 if (command.argc < 2) {
                     printf("Usage: X <program> [args]\n");
                 }
 				execvp(command.argv[1], &command.argv[1]);
             }
+
+            // Print the contents of a file
 			else if (strcmp(command.name, "P") == 0) {
 				execvp("more", command.argv);
             }
+
+            // List the contents of the directory
             else if (strcmp(command.name, "L") == 0) {
                 char *args[] = {"ls", "-l", NULL};
                 execvp("ls", args);
             }
+
+            // Echo the comment
             else if (strcmp(command.name, "E") == 0) {
                 if (command.argc == 1) {
                     exit(0);
@@ -117,10 +136,14 @@
                 }
                 printf("\n");
             }
-            else if(strcmp(command.name,"H") == 0) {
+
+            // Print help menu
+            else if(strcmp(command.name, "H") == 0) {
                 printHelp();
             }
-			else {
+
+            // Unknown command
+			else if (execvp(command.name, command.argv) == -1) {
 				printf("Unrecognized command, type H for a list of commands\n");
             }
 
