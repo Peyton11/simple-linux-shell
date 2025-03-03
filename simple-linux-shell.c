@@ -96,7 +96,10 @@
 				execvp("nano", command.argv);
             }
 			else if (strcmp(command.name, "X") == 0) {
-				execvp(command.argv[1], command.argv);
+                if (command.argc < 2) {
+                    printf("Usage: X <program> [args]\n");
+                }
+				execvp(command.argv[1], &command.argv[1]);
             }
 			else if (strcmp(command.name, "P") == 0) {
 				execvp("more", command.argv);
@@ -205,7 +208,7 @@ void printHelp() {
     printf("Shell commands:\n");
     printf("C file1 file2: Copy; create file2, copy all bytes of file1 to file2 without deleting file1\n");
     printf("D file: Delete the named file\n");
-    printf("E comment: Echo; display comment on screen followed by a new line (multiple spaces/tabs may be reduced to a single space); if no arguments simply issue a new prompt\n");
+    printf("E comment: Echo; display comment on screen followed by a new line\n");
     printf("H: Help; display the user manual, described below\n");
     printf("L: List the contents of the current directory\n");
     printf("M file: Make; create the named text file by launching a text editor\n");
