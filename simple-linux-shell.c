@@ -72,8 +72,12 @@
         parseCommand(cmdLine, &command);
         command.argv[command.argc] = NULL;
 
+        // These shell commands don't require execvp(). Do not need to fork a child process
         if (strcmp(command.name, "Q") == 0) {
             break;
+        }
+        else if (strcmp(command.name, "") == 0) {
+            continue;
         }
 
         // Create a child process to execute the command
@@ -101,7 +105,6 @@
                 char *args[] = {"ls", "-l", NULL};
                 execvp("ls", args);
             }
-            // These commands do not require execvp()
             else if (strcmp(command.name, "E") == 0) {
                 if (command.argc == 1) {
                     exit(0);
@@ -113,9 +116,6 @@
             }
             else if(strcmp(command.name,"H") == 0) {
                 printHelp();
-            }
-            else if (strcmp(command.name, "") == 0) {
-                continue;
             }
 			else {
 				printf("Unrecognized command, type H for a list of commands\n");
