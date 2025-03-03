@@ -3,9 +3,9 @@
 # Target to run ulimit and then start the shell
 run:
 	@echo "Setting ulimit -u 100"
-	@ulimit -u 100  # You can change the value 100 to whatever you need
+	@ulimit -u 100
 	@echo "Starting the shell..."
-	@./simple-linux-shell  # Replace with the name of your compiled shell program
+	@./simple-linux-shell
 
 # The target to build the shell program
 build:
